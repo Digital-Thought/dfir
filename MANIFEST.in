@@ -1,0 +1,2 @@
+include digital_thought_dfir/**/*
+include digital_thought_dfir/version
