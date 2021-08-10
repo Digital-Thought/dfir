@@ -1,2 +1,3 @@
 include digital_thought_dfir/**/*
 include digital_thought_dfir/version
+include digital_thought_dfir/_resources/reports/endpoints/*
