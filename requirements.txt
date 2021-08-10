@@ -1,2 +1,6 @@
 # pythonLibs Requirements
 digital-thought-commons>=1.0.0
+pyvelociraptor
+grpcio
+xlsxwriter
+cryptography

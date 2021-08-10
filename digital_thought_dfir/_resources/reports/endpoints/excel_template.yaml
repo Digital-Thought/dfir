@@ -1,0 +1,190 @@
+name: endpoint_report_excel_template
+description: Endpong Report, Excel Report Template
+
+formats:
+  - name: bold
+    settings:
+      bold: true
+
+  - name: date_time_am_pm
+    settings:
+      num_format: dd/mm/yyyy hh:mm AM/PM
+      bold: true
+
+  - name: header_field
+    settings:
+      bold: true
+      align: left
+      valign: vcenter
+      font_color: '#FFFFFF'
+      bg_color: '#4473C4'
+
+  - name: grey_merged_field
+    settings:
+      bold: true
+      align: center
+      valign: vcenter
+      font_color: '#FFFFFF'
+      bg_color: '#A4A5A4'
+
+worksheets:
+  - name: summary
+    label: Summary
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 1
+          format: header_field
+
+    preset_values:
+      - value: Report Date/Time
+        row: 0
+        column: 0
+        format: bold
+
+      - value: "1/1/2020 1:10 AM"
+        row: 0
+        column: 1
+        format: date_time_am_pm
+
+  - name: endpoints
+    label: endpoints
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+
+  - name: endpoint_users
+    label: endpoint_users
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+
+  - name: audit_logs
+    label: audit_logs
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+
+  - name: detections
+    label: detections
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+
+  - name: events
+    label: events
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+
+  - name: marked_indicators_of_compromise
+    label: marked_indicators_of_compromise
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+
+  - name: vr_clients
+    label: vr_clients
+
+    formattings:
+      columns:
+        - first: 0
+          last: 0
+          format: bold
+          width: 16
+      rows:
+        - row: 0
+          format: header_field
+
+    freeze_pane:
+      column: 1
+      row: 1
+#    merge_ranges:
+#      - range: 'B4:D4'
+#        value: Hello
+#        format: bold
+#
+#      - range: 'E8:G8'
+#        value: Hello2
+#        format: grey_merged_field
+#
+#    preset_values:
+#      - value: Hello World
+#        row: 5
+#        column: 5
+#
+#      - value: Bob the Builder
+#        row: 6
+#        column: 6
+#        format: header_field
