@@ -42,18 +42,28 @@ class Client(object):
 
     def create_users(self, users: List[dict], role_name: str = None) -> dict:
         response = {"success": [], "failed": []}
+        existing_users = []
+        for user in self.users():
+            existing_users.append(user.email.lower())
+
         for user in users:
             try:
-                builder = User.create(self.cbc_api)
-                builder.set_first_name(user['first_name']).set_last_name(user['last_name'])
-                builder.set_email(user['email_address'])
-                assigned_role_name = user.get("role_name", role_name)
-                if assigned_role_name is None:
-                    raise Exception("Role Name was None. A Role Name must be provided")
-                builder.set_role(f'psc:role:{self.org_key}:{assigned_role_name}')
-                builder.build()
-                logging.info(f'Created user {user["last_name"]}, {user["first_name"]} <{user["email_address"]}>')
-                response["success"].append(user)
+                if user['email_address'].lower() not in existing_users:
+                    builder = User.create(self.cbc_api)
+                    builder.set_first_name(user['first_name']).set_last_name(user['last_name'])
+                    builder.set_email(user['email_address'])
+                    assigned_role_name = user.get("role_name", role_name)
+                    if assigned_role_name is None:
+                        raise Exception("Role Name was None. A Role Name must be provided")
+                    builder.set_role(f'psc:role:{self.org_key}:{assigned_role_name}')
+                    builder.build()
+                    logging.info(f'Created user {user["last_name"]}, {user["first_name"]} <{user["email_address"]}>')
+                    response["success"].append(user)
+                else:
+                    user['error'] = f'User {user["email_address"]} already exists'
+                    response["failed"].append(user)
+                    logging.warning(user['error'])
+
             except Exception as ex:
                 user['error'] = str(ex)
                 response["failed"].append(user)

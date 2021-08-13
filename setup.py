@@ -34,6 +34,7 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             'endpoint_report = digital_thought_dfir.reports.endpoints:main',
+            'cbc_user_provision = digital_thought_dfir.edr.carbon_black.cloud.user_provision:main'
         ],
     }
 )
