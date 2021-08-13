@@ -4,3 +4,4 @@ pyvelociraptor
 grpcio
 xlsxwriter
 cryptography
+carbon-black-cloud-sdk
