@@ -54,35 +54,41 @@ def save_reports(data, output_folder, subdomain):
                     col += 1
 
     vr_clients = workbook.get_worksheet_by_name('vr_clients')
-    flattened = json_converter.flatten_json(data['vr_clients'])
-    headers = json_converter.read_fields(flattened)
-    row = 0
-    col = 0
-    for header in headers:
-        if col == 15:
-            vr_clients.write(row, col, 'LastSeen')
-            vr_clients.write(row, col + 1, header)
-        else:
-            vr_clients.write(row, col, header)
-        col += 1
-
-    for entry in flattened:
+    if 'vr_clients' in data:
+        flattened = json_converter.flatten_json(data['vr_clients'])
+        headers = json_converter.read_fields(flattened)
+        row = 0
         col = 0
-        row += 1
         for header in headers:
             if col == 15:
-                vr_clients.write(row, col, f'=( (O{row + 1} / 86400000) + DATE(1970,1,1))+TIME(10,0,0)')
-                vr_clients.write(row, col + 1, entry.get(header, ""))
+                vr_clients.write(row, col, 'LastSeen')
+                vr_clients.write(row, col + 1, header)
             else:
-                vr_clients.write(row, col, entry.get(header, ""))
+                vr_clients.write(row, col, header)
             col += 1
+
+        for entry in flattened:
+            col = 0
+            row += 1
+            for header in headers:
+                if col == 15:
+                    vr_clients.write(row, col, f'=( (O{row + 1} / 86400000) + DATE(1970,1,1))+TIME(10,0,0)')
+                    vr_clients.write(row, col + 1, entry.get(header, ""))
+                else:
+                    vr_clients.write(row, col, entry.get(header, ""))
+                col += 1
 
     summary = workbook.get_worksheet_by_name("Summary")
     summary.write(0, 1, datetime.now().strftime("%d/%m/%Y %-I:%M"))
     endpoints = []
     for entry in data['endpoints']:
-        if entry['attributes']['hostname'].lower() not in endpoints:
-            endpoints.append(entry['attributes']['hostname'].lower())
+        hostname = entry['attributes']['hostname'].lower()
+        if "\\" in hostname:
+            hostname = hostname.split("\\")[1]
+        if "." in hostname:
+            hostname = hostname.split(".")[0]
+        if hostname not in endpoints:
+            endpoints.append(hostname)
 
     row = 2
     summary.write(1, 0, 'Host Name')
@@ -93,11 +99,11 @@ def save_reports(data, output_folder, subdomain):
     summary.write(1, 5, 'OS')
     for endpoint in endpoints:
         summary.write(row, 0, endpoint)
-        summary.write(row, 1, f'=IF(COUNTIF(endpoints!C:C,Summary!A{row + 1})>0,"YES","NO")')
-        summary.write(row, 2, f'=IF(COUNTIF(vr_clients!G:G, LOWER(Summary!A{row + 1}))>0,"YES","NO")')
-        summary.write(row, 3, f'=IFERROR(VLOOKUP(A{row + 1},endpoints!C:F,4,FALSE)="online","NO")')
-        summary.write(row, 4, f'=IFERROR(IF(((($B$1-VLOOKUP(A{row + 1},vr_clients!G:R,10,FALSE))*86400)/60)>20,"FALSE","TRUE"),"NO AGENT")')
-        summary.write(row, 5, f'=VLOOKUP(A{row + 1},endpoints!C:L,10,FALSE)')
+        summary.write(row, 1, f'=IF(COUNTIF(endpoints!C:C,"*" & Summary!A{row + 1} & "*")>0,"YES","NO")')
+        summary.write(row, 2, f'=IF(COUNTIF(vr_clients!G:G, "*" & LOWER(Summary!A{row + 1} & "*"))>0,"YES","NO")')
+        summary.write(row, 3, f'=IFERROR(VLOOKUP("*" & A{row + 1} & "*",endpoints!C:F,4,FALSE)="online","NO")')
+        summary.write(row, 4, f'=IFERROR(IF(((($B$1-VLOOKUP("*" & A{row + 1} & "*",vr_clients!G:R,10,FALSE))*86400)/60)>20,"FALSE","TRUE"),"NO AGENT")')
+        summary.write(row, 5, f'=VLOOKUP("*" & A{row + 1} & "*",endpoints!C:L,10,FALSE)')
         row += 1
 
     workbook.close()
