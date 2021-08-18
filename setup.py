@@ -36,5 +36,8 @@ setuptools.setup(
             'endpoint_report = digital_thought_dfir.reports.endpoints:main',
             'cbc_user_provision = digital_thought_dfir.edr.carbon_black.cloud.user_provision:main'
         ],
-    }
+    },
+    dependency_links=[
+        'git+ssh://git@github.com/Digital-Thought/commons@development-branch#egg=digital-thought-commons'
+    ]
 )
