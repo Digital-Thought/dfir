@@ -1,5 +1,5 @@
 # pythonLibs Requirements
-git+git://github.com/Digital-Thought/commons@development-branch#egg=digital-thought-commons
+https://github.com/Digital-Thought/commons@development-branch#egg=digital-thought-commons
 pyvelociraptor
 grpcio
 xlsxwriter
