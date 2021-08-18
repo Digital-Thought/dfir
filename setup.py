@@ -38,6 +38,6 @@ setuptools.setup(
         ],
     },
     dependency_links=[
-        'git+ssh://git@github.com/Digital-Thought/commons@development-branch#egg=digital-thought-commons'
+        'git+ssh://git@github.com/Digital-Thought/commons@development-branch#egg=digital-thought-commons-dev'
     ]
 )

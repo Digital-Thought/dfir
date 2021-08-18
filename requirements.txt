@@ -1,5 +1,5 @@
 # pythonLibs Requirements
-digital-thought-commons
+digital-thought-commons-dev
 pyvelociraptor
 grpcio
 xlsxwriter
