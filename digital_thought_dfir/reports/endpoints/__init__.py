@@ -26,8 +26,8 @@ def save_reports(data, output_folder, subdomain):
 
     time_stamp = datetime.now().timestamp()
 
-    json_report_file = f'{output_folder}/{subdomain}_{time_stamp}_report.json'
-    excel_report_file = f'{output_folder}/{subdomain}_{time_stamp}_report.xlsx'
+    json_report_file = f'{output_folder}/{subdomain}_{time_stamp} + _report.json'
+    excel_report_file = output_folder + "/" + subdomain + '_report.xlsx'
     template = "{}/../../_resources/reports/endpoints/excel_template.yaml".format(str(pathlib.Path(__file__).parent.absolute()))
 
     logging.info(f"Saving JSON report to: {json_report_file}")
