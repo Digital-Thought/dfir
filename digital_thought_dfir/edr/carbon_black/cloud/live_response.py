@@ -70,8 +70,11 @@ class LiveResponse(object):
                         except Exception as ex:
                             retry_count += 1
                             if "Session command limit has been reached" in str(ex):
-                                logging.warning('Re-initialising Live Response Session')
+                                logging.warning('Session command limit has been reached: Re-initialising Live Response Session')
                                 self.lr_session.close()
+                                self.lr_session = self.device.lr_session()
+                            elif "Session not found" in str(ex):
+                                logging.warning('Session not found: Re-initialising Live Response Session')
                                 self.lr_session = self.device.lr_session()
                             logging.exception(f'Error {str(ex)} when collecting file {directory_path}{dir_entry["filename"]} from {device_name}')
                             record['success'] = False
