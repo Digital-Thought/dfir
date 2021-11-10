@@ -70,19 +70,27 @@ class LiveResponse(object):
                             break
                         except Exception as ex:
                             retry_count += 1
-                            if "Session command limit has been reached" in str(ex):
-                                logging.warning('Session command limit has been reached: Re-initialising Live Response Session')
-                                self.lr_session.close()
-                                time.sleep(10)
-                                self.lr_session = self.device.lr_session()
-                            elif "Session not found" in str(ex):
-                                logging.warning('Session not found: Re-initialising Live Response Session')
-                                self.lr_session = self.device.lr_session()
-                            logging.exception(f'Error {str(ex)} when collecting file {directory_path}{dir_entry["filename"]} from {device_name}')
-                            record['success'] = False
-                            record['error'] = str(ex)
-                            record['retry_count'] = retry_count
-                            if retry_count >= 5:
+                            try:
+                                if "Session command limit has been reached" in str(ex):
+                                    logging.warning('Session command limit has been reached: Re-initialising Live Response Session')
+                                    self.lr_session.close()
+                                    time.sleep(10)
+                                    self.lr_session = self.device.lr_session()
+                                elif "Session not found" in str(ex):
+                                    logging.warning('Session not found: Re-initialising Live Response Session')
+                                    time.sleep(10)
+                                    self.lr_session = self.device.lr_session()
+                                logging.exception(f'Error {str(ex)} when collecting file {directory_path}{dir_entry["filename"]} from {device_name}')
+                                record['success'] = False
+                                record['error'] = str(ex)
+                                record['retry_count'] = retry_count
+                                if retry_count >= 5:
+                                    break
+                            except Exception as ex1:
+                                logging.exception(f'Error {str(ex1)} when collecting file {directory_path}{dir_entry["filename"]} from {device_name}')
+                                record['success'] = False
+                                record['error'] = str(ex1)
+                                record['retry_count'] = retry_count
                                 break
 
                     records.append(record)
