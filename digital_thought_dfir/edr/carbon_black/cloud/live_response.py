@@ -54,6 +54,8 @@ class LiveResponse(object):
 
                     while True:
                         try:
+                            if os.path.exists(local_file):
+                                os.remove(local_file)
                             with open(local_file, "wb") as fout:
                                 data = self.lr_session.get_raw_file(f'{directory_path}{dir_entry["filename"]}')
                                 shutil.copyfileobj(data, fout)
