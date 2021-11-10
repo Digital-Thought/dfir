@@ -1,4 +1,5 @@
 import json
+import time
 
 from cbc_sdk.platform import Device
 from digital_thought_commons import digests
@@ -72,6 +73,7 @@ class LiveResponse(object):
                             if "Session command limit has been reached" in str(ex):
                                 logging.warning('Session command limit has been reached: Re-initialising Live Response Session')
                                 self.lr_session.close()
+                                time.sleep(10)
                                 self.lr_session = self.device.lr_session()
                             elif "Session not found" in str(ex):
                                 logging.warning('Session not found: Re-initialising Live Response Session')
