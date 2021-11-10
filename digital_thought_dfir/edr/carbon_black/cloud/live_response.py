@@ -50,24 +50,34 @@ class LiveResponse(object):
                     for key in dir_entry:
                         record[key] = dir_entry[key]
 
-                    try:
-                        with open(local_file, "wb") as fout:
-                            data = self.lr_session.get_raw_file(f'{directory_path}{dir_entry["filename"]}')
-                            shutil.copyfileobj(data, fout)
-                            data.close()
-                        file_digest = digests.calc_file_digest(local_file)
-                        record['md5'] = file_digest.md5
-                        record['sha1'] = file_digest.sha1
-                        record['sha256'] = file_digest.sha256
-                        record['success'] = True
-                    except Exception as ex:
-                        if "Session command limit has been reached" in {str(ex)}:
-                            logging.warning('Re-initialising Live Response Session')
-                            self.lr_session.close()
-                            self.lr_session = self.device.lr_session()
-                        logging.exception(f'Error {str(ex)} when collecting file {directory_path}{dir_entry["filename"]} from {device_name}')
-                        record['success'] = False
-                        record['error'] = str(ex)
+                    retry_count = 0
+
+                    while True:
+                        try:
+                            with open(local_file, "wb") as fout:
+                                data = self.lr_session.get_raw_file(f'{directory_path}{dir_entry["filename"]}')
+                                shutil.copyfileobj(data, fout)
+                                data.close()
+                            file_digest = digests.calc_file_digest(local_file)
+                            record['md5'] = file_digest.md5
+                            record['sha1'] = file_digest.sha1
+                            record['sha256'] = file_digest.sha256
+                            record['success'] = True
+                            record['retry_count'] = retry_count
+                            break
+                        except Exception as ex:
+                            retry_count += 1
+                            if "Session command limit has been reached" in str(ex):
+                                logging.warning('Re-initialising Live Response Session')
+                                self.lr_session.close()
+                                self.lr_session = self.device.lr_session()
+                            logging.exception(f'Error {str(ex)} when collecting file {directory_path}{dir_entry["filename"]} from {device_name}')
+                            record['success'] = False
+                            record['error'] = str(ex)
+                            record['retry_count'] = retry_count
+                            if retry_count >= 5:
+                                break
+
                     records.append(record)
 
     def get_directory(self, directory_path, destination, recursive=True):

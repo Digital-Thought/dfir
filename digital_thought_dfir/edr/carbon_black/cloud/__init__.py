@@ -83,5 +83,5 @@ class Client(object):
 
         if device is None:
             raise Exception(f'No Device was specified')
-
+        device.lr_session
         return LiveResponse(device)
